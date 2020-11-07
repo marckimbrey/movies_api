@@ -54,15 +54,30 @@ class Movie {
     }
 
 
-    // public function create() {
-    //     // create query
-    //     $query = "INSERT INTO $this->table (id, title, genre, release_date) VALUES (null, $this->title, $this->genre, $this->release_date)";
-    //     //prepare query
-    //     $stmt = $this->conn->prepare($query);
-    //     // bind values to query
+    public function create() {
+        // create query
+        $query = "INSERT INTO $this->table (id, title, genre, release_date) VALUES (null, :title, :genre, :release_date)";
+        //prepare query
+        $stmt = $this->conn->prepare($query);
 
-    //     // input 
-    // }
+        // clean data
+        //$this->id = htmlspecialchars(strip_tags($this->id ));
+        $this->title = htmlspecialchars(strip_tags($this->title));
+        $this->genre = htmlspecialchars(strip_tags($this->genre));
+        $this->release_date = htmlspecialchars(strip_tags($this->release_date));
+        // bind values to query
+        $stmt->bindParam(':title', $this->title);
+        $stmt->bindParam(':genre', $this->genre);
+        $stmt->bindParam(':release_date', $this->release_date);
+        // execute query
+        if ($stmt->execute()) {
+            return true;
+        } else {
+             printf("Error: %s.\n", $stmt->error);
+            return false;
+        }
+
+    }
 
 }
 
