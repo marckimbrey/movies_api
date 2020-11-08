@@ -13,7 +13,8 @@ class Movie {
 
     // Constructor with DB
     public function __construct($db) {
-    $this->conn = $db;
+        // $this->conn is connected to database
+        $this->conn = $db;
     }
 
     // get all movies from DB
@@ -99,6 +100,29 @@ class Movie {
         $stmt->bindParam(':genre', $this->genre);
         $stmt->bindParam(':release_date', $this->release_date);
 
+        // execute query
+        if ($stmt->execute()) {
+            return true;
+        } else {
+             printf("Error: %s.\n", $stmt->error);
+            return false;
+        }
+
+    }
+
+    public function delete() {
+        // create query
+        $query = "DELETE FROM $this->table WHERE id = :id";
+
+        //prepare query
+        $stmt = $this->conn->prepare($query);
+
+        // clean data
+        $this->id = htmlspecialchars(strip_tags($this->id));
+
+        // bind id to query
+         $stmt->bindParam(':id', $this->id);
+  
         // execute query
         if ($stmt->execute()) {
             return true;
